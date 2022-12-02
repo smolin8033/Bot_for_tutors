@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "bot_for_tutors"
+version = "1.2.2"
+description = "A bot for tutors and their students"
+authors = ["Alexander Smolin <smolll123@mail.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "2.23.1"
+requests = "2.28.1"
+pydantic = "1.10.2"
+python-dotenv = "0.21.0"
