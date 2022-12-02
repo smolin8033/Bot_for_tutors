@@ -1,9 +1,15 @@
 import logging
 
-from dotenv import dotenv_values
-
-credentials = dotenv_values(".env")
-
-API_TOKEN = credentials["TELEGRAM_TOKEN"]
+from pydantic import BaseSettings
 
 logging.basicConfig(level=logging.INFO)
+
+
+class Settings(BaseSettings):
+    TOKEN: str
+
+    class Config:
+        env_file = ".env"
+
+
+settings = Settings()
