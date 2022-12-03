@@ -2,9 +2,7 @@ from aiogram import Bot, Dispatcher
 
 from config.conf import settings
 
-# TODO async запросы только можно httpx/aiohttp
 # TODO data transfer object (создать Dataclass User поля username telegram_id) dataclasses python
-# TODO make timeout python
 # TODO обработка ответа вы зарегистрировались, вы не зарегистрировались
 # TODO залогировать такой-то пользователь залогировался или нет
 # TODO url вынести в настройки

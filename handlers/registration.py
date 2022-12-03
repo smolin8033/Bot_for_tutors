@@ -19,5 +19,5 @@ async def register(message: types.Message):
     """
     user_id = message.from_user.id
     username = message.from_user.username
-    send_registration_data(user_id, username)
+    await send_registration_data(user_id, username)
     await message.reply(f"Your user id is: {user_id}")

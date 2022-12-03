@@ -1,5 +1,3 @@
-import asyncio
-
 import aiohttp
 
 """
@@ -14,13 +12,11 @@ def send_registration_data(user_id, username):
 """
 
 async def send_registration_data(user_id, username):
-    async with aiohttp.ClientSession() as session:
+    timeout = aiohttp.ClientTimeout(total=60)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
         async with session.post('http://localhost/api/telegram_users/', data={
         "username": username,
         "telegram_id": user_id
     }) as resp:
             print(resp.status)
             print(await resp.text())
-
-
-asyncio.run(send_registration_data())
