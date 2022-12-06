@@ -5,7 +5,6 @@ from config.conf import settings
 # TODO data transfer object (создать Dataclass User поля username telegram_id) dataclasses python
 # TODO обработка ответа вы зарегистрировались, вы не зарегистрировались
 # TODO залогировать такой-то пользователь залогировался или нет
-# TODO url вынести в настройки
 # TODO api папка там файл с отправкой api
 # TODO если можно tests если найти как делать
 # TODO при регистрации имя фамилия (либо учитель, либо ученик)

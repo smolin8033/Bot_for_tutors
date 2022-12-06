@@ -7,6 +7,7 @@ logging.basicConfig(level=logging.INFO)
 
 class Settings(BaseSettings):
     TOKEN: str
+    WEB_SERVICE_URL: str
 
     class Config:
         env_file = ".env"
