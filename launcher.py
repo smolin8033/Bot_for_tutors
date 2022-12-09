@@ -1,7 +1,9 @@
+# flake8: noqa
+
 from aiogram.utils import executor
 
-from loader import dp
 import handlers
+from loader import dp
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
