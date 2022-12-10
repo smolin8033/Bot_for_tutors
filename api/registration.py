@@ -5,6 +5,7 @@ import aiohttp
 from config.conf import logger, settings
 from config.core import USER_AGENT
 from entities import User
+from messages.registration import registration_status
 
 
 class HttpClient:
@@ -30,9 +31,12 @@ class HttpClient:
                         f'The user {data["username"]} (telegram id: {data["telegram_id"]}) has been successfully '
                         f"registered."
                     )
+                    await registration_status(data["telegram_id"], response.status)
                     return response.ok
                 else:
-                    logger.info("Unsuccessful")
+                    logger.error(response.status)
+                    await registration_status(data["telegram_id"], response.status)
+                    return response.status
 
     async def registration(self, user: User) -> dict:
         response: dict = await self.method(name="post", data=asdict(user))
