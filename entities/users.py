@@ -6,5 +6,6 @@ from typing import Optional
 class User:
     username: str
     telegram_id: int
+    role: str
     first_name: Optional[str] = ""
     last_name: Optional[str] = ""
