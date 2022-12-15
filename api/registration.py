@@ -22,7 +22,8 @@ class HttpClient:
         if data:
             self.data = data
         if headers:
-            kwargs["headers"] = kwargs["headers"].update(headers)
+            for key, value in headers.items():
+                kwargs["headers"].update({key: value})
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as session:
             async with getattr(session, name)(self.url, data=data, **kwargs) as response:
@@ -39,7 +40,7 @@ class HttpClient:
                     return response.status
 
     async def registration(self, user: User) -> dict:
-        response: dict = await self.method(name="post", data=asdict(user))
+        response: dict = await self.method(name="post", data=asdict(user), headers={"role": user.role})
         return response
 
 

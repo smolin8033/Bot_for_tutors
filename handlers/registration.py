@@ -35,19 +35,15 @@ async def ask_about_role(message: types.Message):
     await message.reply("Are you a teacher or a student?", reply_markup=inline_keyboard)
 
 
-@dp.callback_query_handler()
+@dp.callback_query_handler(lambda callback_query: "teacher" or "student" in callback_query.data)
 async def process_callback(callback_query: types.CallbackQuery):
-    if "teacher" in callback_query.data:
-        await callback_query.answer("Your choice is accepted")
-        await bot.send_message(callback_query.from_user.id, "You will be registered as a teacher")
-        await register(callback_query)
-    if "student" in callback_query.data:
-        await callback_query.answer("Your choice is accepted")
-        await bot.send_message(callback_query.from_user.id, "You will be registered as a student")
+    role: str = callback_query.data.split(":")[-1]
+    await callback_query.answer("Your choice is accepted")
+    await bot.send_message(callback_query.from_user.id, f"You will be registered as a {role}")
+    await register(callback_query, role)
 
 
-async def register(callback_query):
-    role = callback_query.data.split(":")[-1]
+async def register(callback_query: types.CallbackQuery, role: str):
     user = User(
         username=callback_query.from_user.username,
         telegram_id=callback_query.from_user.id,
