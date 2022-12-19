@@ -1,11 +1,13 @@
+import asyncio.exceptions
 from dataclasses import asdict
 
-import aiohttp
+from aiohttp import ClientResponse, ClientSession, ClientTimeout
+from aiohttp.client_exceptions import ClientConnectionError
 
+from api.constants import USER_AGENT
 from config.conf import logger, settings
-from config.core import USER_AGENT
 from entities import User
-from messages.registration import registration_status
+from messages.registration import send_registration_status
 
 
 class HttpClient:
@@ -15,43 +17,49 @@ class HttpClient:
         self.headers = {
             "User-Agent": USER_AGENT,
         }
-        self.data = None
 
-    async def method(self, name="get", data: dict = None, headers: dict = None):
+    async def request(self, name="get", **kwargs) -> None | ClientResponse:
+        async with ClientSession(timeout=ClientTimeout(total=self.timeout)) as session:
+            try:
+                async with getattr(session, name)(self.url, **kwargs) as response:
+                    ...
+            except asyncio.TimeoutError as exc:
+                logger.error(type(exc))
+            except ClientConnectionError as exc:
+                logger.error(f"{type(exc)}: {exc}")
+                return
+            return response
+
+    async def method(self, name="get", data: dict = None, headers: dict = None) -> None | ClientResponse:
         kwargs = {"headers": self.headers}
         if data:
-            self.data = data
+            kwargs["data"] = data
         if headers:
             for key, value in headers.items():
                 kwargs["headers"].update({key: value})
 
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as session:
-            async with getattr(session, name)(self.url, data=data, **kwargs) as response:
-                if response.status == 201:
-                    logger.info(
-                        f'The user {data["username"]} (telegram id: {data["telegram_id"]}) has been successfully '
-                        f"registered."
-                    )
-                    await registration_status(data["telegram_id"], response.status)
-                    return response.ok
-                else:
-                    logger.error(response.status)
-                    await registration_status(data["telegram_id"], response.status)
-                    return response.status
-
-    async def registration(self, user: User) -> dict:
-        response: dict = await self.method(name="post", data=asdict(user), headers={"role": user.role})
+        response: ClientResponse | None = await self.request(name, **kwargs)
         return response
+
+    async def registration(self, user: User) -> bool:
+        response: ClientResponse | None = await self.method(name="post", data=asdict(user), headers={"role": user.role})
+
+        if response is None:
+            logger.error("Failed to get response")
+
+        if response:
+
+            if not response.ok:
+                logger.error(f"{response.status} {response.json()}")
+
+            if response.status == 201:
+                logger.info(
+                    f"The user {user.username} (telegram id: {user.telegram_id}) has been successfully registered."
+                )
+
+            await send_registration_status(user.telegram_id, response.status)
+
+        return bool(response)
 
 
 http_client = HttpClient()
-
-"""
-
-async def send_registration_data(user: User):
-    timeout = aiohttp.ClientTimeout(total=60)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
-        async with session.post(settings.WEB_SERVICE_URL, data=asdict(user)) as resp:
-            print(resp.status)
-            print(await resp.text())
-"""

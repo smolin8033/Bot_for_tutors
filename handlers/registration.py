@@ -14,22 +14,6 @@ async def send_welcome(message: types.Message):
     await message.reply("Hi, I will register you. Type: /register")
 
 
-"""
-@dp.message_handler(commands=["register"])
-async def register(message: types.Message):
-"""
-# This handler will be called when user sends `/register` command
-"""
-    user = User(
-        username=message.from_user.username,
-        telegram_id=message.from_user.id,
-        first_name=message.from_user.first_name,
-        last_name=message.from_user.last_name,
-    )
-    await http_client.registration(user)
-"""
-
-
 @dp.message_handler(commands=["register"])
 async def ask_about_role(message: types.Message):
     await message.reply("Are you a teacher or a student?", reply_markup=inline_keyboard)
