@@ -2,6 +2,7 @@ from aiogram import types
 
 from api.registration import http_client
 from entities import User
+from faked_data.users_data import faked_user1
 from keyboards.inline_keyboards import inline_keyboard
 from loader import bot, dp
 
@@ -35,4 +36,25 @@ async def register(callback_query: types.CallbackQuery, role: str):
         last_name=callback_query.from_user.last_name,
         role=role,
     )
+    await http_client.registration(user)
+
+
+@dp.message_handler(commands=["get_users"])
+async def get_users(message: types.Message):
+    await message.reply("Here is the list of your teachers/students:")
+    # with await http_client.get_users() as response:
+    #     response = await response.json()
+    #     await message.reply(response)
+    # AttributeError: __enter__
+
+    # response = await http_client.get_users()
+    # response = await response.json()
+    # await message.reply(response)
+    # aiohttp.client_exceptions.ClientConnectionError: Connection
+    # closed
+
+
+@dp.message_handler(commands=["try"])
+async def register_test(*args, **kwargs):
+    user = faked_user1
     await http_client.registration(user)

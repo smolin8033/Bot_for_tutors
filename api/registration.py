@@ -42,7 +42,11 @@ class HttpClient:
         return response
 
     async def registration(self, user: User) -> bool:
-        response: ClientResponse | None = await self.method(name="post", data=asdict(user), headers={"role": user.role})
+        response: ClientResponse | None = await self.method(
+            name="post",
+            data=asdict(user),
+            headers={"telegram-id": str(user.telegram_id), "role": user.role, "username": user.username},
+        )
 
         if response is None:
             logger.error("Failed to get response")
@@ -60,6 +64,12 @@ class HttpClient:
             await send_registration_status(user.telegram_id, response.status)
 
         return bool(response)
+
+    async def get_users(self):
+        response: ClientResponse | None = await self.method(name="get")
+        logger.info(f"Response:{response}")
+
+        return response
 
 
 http_client = HttpClient()
