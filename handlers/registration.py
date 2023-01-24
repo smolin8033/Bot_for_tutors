@@ -42,16 +42,8 @@ async def register(callback_query: types.CallbackQuery, role: str):
 @dp.message_handler(commands=["get_users"])
 async def get_users(message: types.Message):
     await message.reply("Here is the list of your teachers/students:")
-    # with await http_client.get_users() as response:
-    #     response = await response.json()
-    #     await message.reply(response)
-    # AttributeError: __enter__
-
-    # response = await http_client.get_users()
-    # response = await response.json()
-    # await message.reply(response)
-    # aiohttp.client_exceptions.ClientConnectionError: Connection
-    # closed
+    users = await http_client.get_users()
+    await message.reply(users)
 
 
 @dp.message_handler(commands=["try"])
