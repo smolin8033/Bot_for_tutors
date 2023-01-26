@@ -3,6 +3,7 @@ from aiogram import types
 from api.registration import http_client
 from entities import User
 from faked_data.users_data import faked_user1
+from formatters.users import get_first_and_last_name, make_string_representation
 from keyboards.inline_keyboards import inline_keyboard
 from loader import bot, dp
 
@@ -43,7 +44,11 @@ async def register(callback_query: types.CallbackQuery, role: str):
 async def get_users(message: types.Message):
     await message.reply("Here is the list of your teachers/students:")
     users = await http_client.get_users()
-    await message.reply(users)
+
+    names: list = get_first_and_last_name(users)
+
+    users_string_data: str = make_string_representation(names)
+    await message.reply(users_string_data)
 
 
 @dp.message_handler(commands=["try"])
