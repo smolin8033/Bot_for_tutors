@@ -49,21 +49,22 @@ class HttpClient:
             data=asdict(user),
             headers={"telegram-id": str(user.telegram_id), "role": user.role, "username": user.username},
         )
+        logger.info(f"\n\n in async def registration респонс {response} \n\n")
 
         if response is None:
             logger.error("Failed to get response")
 
         if response:
 
-            if not response.ok:
-                logger.error(f"{response.status} {response.json()}")
+            if not response[0].ok:
+                logger.error(f"{response[0].status} {response[0].json()}")
 
-            if response.status == 201:
+            if response[0].status == 201:
                 logger.info(
                     f"The user {user.username} (telegram id: {user.telegram_id}) has been successfully registered."
                 )
 
-            await send_registration_status(user.telegram_id, response.status)
+            await send_registration_status(user.telegram_id, response[0].status)
 
         return bool(response)
 

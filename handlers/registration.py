@@ -1,6 +1,7 @@
 from aiogram import types
 
 from api.registration import http_client
+from config.conf import logger
 from entities import User
 from faked_data.users_data import faked_user1
 from formatters.users import get_first_and_last_name, make_string_representation
@@ -30,6 +31,7 @@ async def process_callback(callback_query: types.CallbackQuery):
 
 
 async def register(callback_query: types.CallbackQuery, role: str):
+    logger.info("\n\nI entered async def register\n\n")
     user = User(
         username=callback_query.from_user.username,
         telegram_id=callback_query.from_user.id,

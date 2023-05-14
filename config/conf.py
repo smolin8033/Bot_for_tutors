@@ -2,7 +2,7 @@ import logging
 
 from pydantic import BaseSettings
 
-logging.basicConfig(level=logging.INFO, filemode="w", filename="bot.log")
+logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger()
 
