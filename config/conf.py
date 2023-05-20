@@ -2,9 +2,10 @@ import logging
 
 from pydantic import BaseSettings
 
-logging.basicConfig(level=logging.INFO)
+from config.logging_conf.loggers import logger
 
-logger = logging.getLogger()
+for handler in logger.handlers:
+    handler.setFormatter(logging.Formatter("%(levelname)s - %(message)s"))
 
 
 class Settings(BaseSettings):

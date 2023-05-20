@@ -11,6 +11,7 @@ requests = "2.28.1"
 pydantic = "1.10.2"
 python-dotenv = "0.21.0"
 faker = "^16.6.0"
+mypy = "^1.3.0"
 
 [tool.flake8]
 per-file-ignores = [
@@ -27,3 +28,11 @@ include = '\.pyi?$'
 atomic = true
 skip_gitignore = true
 profile = 'black'
+
+[tool.mypy]
+python_version = "3.10"
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "aiogram.*"
+ignore_missing_imports = true
