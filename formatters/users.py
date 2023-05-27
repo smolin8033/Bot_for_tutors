@@ -10,7 +10,7 @@ def make_string_representation(names: list) -> str:
     """
     Make a good-looking Telegram UI str representation of users
     """
-    users_string_data = [" ".join([str(x) for x in lst]) for lst in names]
+    users_list_data: list = [" ".join([str(x) for x in lst]) for lst in names]
 
-    users_string_data = "\n".join(users_string_data)
+    users_string_data: str = "\n".join(users_list_data)
     return users_string_data

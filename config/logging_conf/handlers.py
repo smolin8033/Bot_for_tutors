@@ -7,6 +7,6 @@ class MultiLineHandler(logging.StreamHandler):
         logging.StreamHandler.__init__(self)
         self.line_length = line_length
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         record.msg = "\n".join(wrap(record.msg, self.line_length))
         super().emit(record)

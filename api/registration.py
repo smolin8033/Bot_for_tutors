@@ -1,6 +1,6 @@
 import asyncio.exceptions
 from dataclasses import asdict
-from typing import Tuple
+from typing import Optional, Tuple
 
 from aiohttp import ClientResponse, ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientConnectionError
@@ -12,14 +12,14 @@ from messages.registration import send_registration_status
 
 
 class HttpClient:
-    def __init__(self):
+    def __init__(self) -> None:
         self.timeout = 60
         self.url = settings.WEB_SERVICE_URL
         self.headers = {
             "User-Agent": USER_AGENT,
         }
 
-    async def request(self, name="get", **kwargs) -> Tuple[None | ClientResponse, None | str] | None:
+    async def request(self, name: str = "get", **kwargs: dict) -> Tuple[ClientResponse, list] | None:
         async with ClientSession(timeout=ClientTimeout(total=self.timeout)) as session:
             try:
                 async with getattr(session, name)(self.url, **kwargs) as response:
@@ -29,10 +29,12 @@ class HttpClient:
                 logger.error(type(exc))
             except ClientConnectionError as exc:
                 logger.error(f"{type(exc)}: {exc}")
-                return
+                return None
             return response, response_text
 
-    async def method(self, name="get", data: dict = None, headers: dict = None) -> None | ClientResponse:
+    async def method(
+        self, name: str = "get", data: Optional[dict] = None, headers: Optional[dict] = None
+    ) -> Tuple[ClientResponse, list] | None:
         kwargs = {"headers": self.headers}
         if data:
             kwargs["data"] = data
@@ -40,16 +42,15 @@ class HttpClient:
             for key, value in headers.items():
                 kwargs["headers"].update({key: value})
 
-        response: ClientResponse | None = await self.request(name, **kwargs)
+        response: Tuple[ClientResponse, list] | None = await self.request(name, **kwargs)
         return response
 
     async def registration(self, user: User) -> bool:
-        response: ClientResponse | None = await self.method(
+        response: tuple | None = await self.method(
             name="post",
             data=asdict(user),
             headers={"telegram-id": str(user.telegram_id), "role": user.role, "username": user.username},
         )
-        logger.info(f"\n\n in async def registration респонс {response} \n\n")
 
         if response is None:
             logger.error("Failed to get response")
@@ -68,12 +69,18 @@ class HttpClient:
 
         return bool(response)
 
-    async def get_users(self) -> str:
-        response_tuple: Tuple[None | ClientResponse, None | str] | None = await self.method(
+    async def get_users(self) -> list:
+        response: Tuple[ClientResponse, list] | None = await self.method(
             name="get", headers={"telegram-id": "341861983", "role": "teacher", "username": "alexsm0l"}
         )
 
-        return response_tuple[1]
+        logger.info(f"{response}")
+        logger.info(f"{type(response[0])}")
+        logger.info(f"{type(response[1])}")
+
+        response_list = response[1]
+
+        return response_list
 
 
 http_client = HttpClient()
