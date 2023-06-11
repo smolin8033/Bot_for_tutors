@@ -52,6 +52,6 @@ async def get_users(message: types.Message) -> None:
 
 
 @dp.message_handler(commands=["try"])
-async def register_test() -> None:
+async def register_test(message: types.Message) -> None:
     user = faked_user1
     await http_client.registration(user)
