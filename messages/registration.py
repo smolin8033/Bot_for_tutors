@@ -3,6 +3,7 @@ from loader import bot
 message_mapper = {
     201: "You have been successfully registered",
     400: "You have been registered before",
+    403: "You have been registered before",
     500: "Failed to register due to a server problem",
     502: "Failed to register due to a server problem",
 }

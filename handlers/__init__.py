@@ -1,1 +1,1 @@
-from . import registration
+from . import available_commands, registration

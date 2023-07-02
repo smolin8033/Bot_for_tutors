@@ -45,7 +45,7 @@ class HttpClient:
         response: Tuple[ClientResponse, list] | None = await self.request(name, **kwargs)
         return response
 
-    async def registration(self, user: User) -> bool:
+    async def send_registration_data(self, user: User) -> bool:
         response: tuple | None = await self.method(
             name="post",
             data=asdict(user),
@@ -58,7 +58,8 @@ class HttpClient:
         if response:
 
             if not response[0].ok:
-                logger.error(f"{response[0].status} {response[0].json()}")
+                content: dict = await response[0].json()
+                logger.error(f"{response[0].status} {content}")
 
             if response[0].status == 201:
                 logger.info(
@@ -69,14 +70,12 @@ class HttpClient:
 
         return bool(response)
 
-    async def get_users(self) -> list:
+    async def get_users(self, user: User) -> list:
         response: Tuple[ClientResponse, list] | None = await self.method(
-            name="get", headers={"telegram-id": "341861983", "role": "teacher", "username": "alexsm0l"}
+            name="get",
+            data=asdict(user),
+            headers={"telegram-id": str(user.telegram_id), "role": user.role, "username": user.username},
         )
-
-        logger.info(f"{response}")
-        logger.info(f"{type(response[0])}")
-        logger.info(f"{type(response[1])}")
 
         response_list = response[1]
 

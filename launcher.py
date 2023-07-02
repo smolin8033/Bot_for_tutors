@@ -1,5 +1,4 @@
 # flake8: noqa
-
 from aiogram.utils import executor
 
 import handlers
