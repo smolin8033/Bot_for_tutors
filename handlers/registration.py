@@ -22,12 +22,12 @@ async def send_welcome(message: types.Message) -> None:
     user.first_name = message.from_user.first_name
     user.last_name = message.from_user.last_name
 
-    await message.reply("Hi, I will register you. Type: /register")
+    await message.answer("Hi, I will register you. Type: /register")
 
 
 @dp.message_handler(commands=["register"])
 async def ask_about_role(message: types.Message) -> None:
-    await message.reply("Are you a teacher or a student?", reply_markup=inline_keyboard)
+    await message.answer("Are you a teacher or a student?", reply_markup=inline_keyboard)
 
 
 @dp.callback_query_handler(lambda callback_query: "teacher" or "student" in callback_query.data)
@@ -47,15 +47,15 @@ async def register(role: str) -> None:
 @dp.message_handler(commands=["get_users"])
 async def get_users(message: types.Message) -> None:
     try:
-        await message.reply("Here is the list of your teachers/students:")
+        await message.answer("Here is the list of your teachers/students:")
         users = await http_client.get_users(user)
 
         names: list = get_first_and_last_name(users)
 
         users_string_data: str = make_string_representation(names)
-        await message.reply(users_string_data)
+        await message.answer(users_string_data)
     except MessageTextIsEmpty:
-        await message.reply("No related teachers/students")
+        await message.answer("No related teachers/students")
 
 
 @dp.message_handler(commands=["try"])

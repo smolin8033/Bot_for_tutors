@@ -1,6 +1,7 @@
 # flake8: noqa
 
 from aiogram import Bot, Dispatcher
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from config.conf import settings
 
@@ -14,4 +15,7 @@ from config.conf import settings
 #  TODO CRUD User (это в принципе не нужно, мб что-то из)
 
 bot = Bot(token=settings.TOKEN)
-dp = Dispatcher(bot)
+
+storage = MemoryStorage()
+
+dp = Dispatcher(bot, storage=storage)

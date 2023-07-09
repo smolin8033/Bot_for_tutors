@@ -1,1 +1,1 @@
-from . import available_commands, registration
+from . import available_commands, hometask, registration

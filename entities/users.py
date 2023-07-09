@@ -10,9 +10,6 @@ class User:
     first_name: Optional[str] = ""
     last_name: Optional[str] = ""
 
-    def form_user_data(self):
-        pass
-
 
 user = User(
     username="",
